@@ -5,7 +5,6 @@ import Image from "next/image";
 
 const Header = () => {
   const { user } = useUser();
-  console.log(user);
   return (
     <section className="w-full h-full flex flex-col gap-y-6">
       <div className="flex gap-x-4 px-6">

@@ -25,11 +25,11 @@ const Banner = () => {
         spaceBetween={50}
         slidesPerView={1}
         navigation={{
-          nextEl: ".custom-next",
-          prevEl: ".custom-prev",
+          nextEl: ".banner-next",
+          prevEl: ".banner-prev",
         }}
         autoplay={{ delay: 3000 }}
-        className="h-80 w-full"
+        className="h-80 w- z-0"
       >
         {data.map((item) => (
           <SwiperSlide key={item.id}>
@@ -38,17 +38,17 @@ const Banner = () => {
               alt="banner"
               width={1000}
               height={1000}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover z-0"
             />
           </SwiperSlide>
         ))}
       </Swiper>
 
       {/* Custom Navigation Buttons */}
-      <button className="custom-prev absolute left-2 top-[40%] z-10 bg-black text-white p-2 rounded-full opacity-80 hover:opacity-100 transition-opacity duration-300">
+      <button className="banner-prev absolute left-2 top-[40%] z-10 bg-black text-white p-2 rounded-full opacity-80 hover:opacity-100 transition-opacity duration-300">
         <ChevronLeft />
       </button>
-      <button className="custom-next absolute right-2 top-[40%] z-10 bg-black text-white p-2 rounded-full opacity-80 hover:opacity-100 transition-opacity duration-300">
+      <button className="banner-next absolute right-2 top-[40%] z-10 bg-black text-white p-2 rounded-full opacity-80 hover:opacity-100 transition-opacity duration-300">
         <ChevronRight />
       </button>
     </div>
