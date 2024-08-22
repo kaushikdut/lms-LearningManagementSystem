@@ -3,7 +3,9 @@ import Image from "next/image";
 const Logo = () => {
   return (
     <>
-      <Image src={"/logo.svg"} alt="logo" width={80} height={80} />
+      <h1 className="select-none cursor-pointer text-2xl font-bold text-neutral-50">
+        <span className="text-[#defafc] text-3xl">You</span>Demy
+      </h1>
     </>
   );
 };

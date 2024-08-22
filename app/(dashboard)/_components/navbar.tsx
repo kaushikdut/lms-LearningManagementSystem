@@ -1,7 +1,6 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import Logo from "./logo";
 import SearchBar from "./searchBar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -12,8 +11,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const isTeacher = pathname.includes("/teacher");
   return (
-    <div className="w-full h-full bg-white flex items-center justify-between border-b px-6 -z-50">
-      <Logo />
+    <div className="w-full h-full flex items-center justify-between px-6 -z-50">
       <SearchBar />
       <div className="flex gap-x-4">
         {isTeacher ? (
