@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
+import Logo from "./logo";
 
 const Navbar = () => {
   const pathname = usePathname();

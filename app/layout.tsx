@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import ToastProvider from "@/components/provider/toast-provider";
 
-const inter = Lato({
+const poppins = Poppins({
   subsets: ["latin"],
   weight: "400",
 });
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={poppins.className}>
+          <ToastProvider />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
