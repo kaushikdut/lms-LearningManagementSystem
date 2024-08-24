@@ -7,10 +7,10 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Pencil } from "lucide-react";
@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 import * as z from "zod";
 
 interface DescriptionFormProps {
-  initialData: { description: string };
+  initialData: { description: string | undefined };
   courseId: string;
 }
 
@@ -75,10 +75,12 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 
       {!isEditing && (
         <p
-          className="text-neutral-700 text-sm font-semibold pl-2
-        "
+          className={cn(
+            "text-neutral-700 text-sm font-semibold pl-2",
+            !initialData.description && "italic text-neutral-600"
+          )}
         >
-          {initialData?.description}
+          {initialData.description ? initialData.description : "No description"}
         </p>
       )}
 
@@ -91,7 +93,11 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input disabled={isSubmitting} {...field} />
+                    <Textarea
+                      disabled={isSubmitting}
+                      placeholder="type a description for the course..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     Give your course a description. You can change it later.

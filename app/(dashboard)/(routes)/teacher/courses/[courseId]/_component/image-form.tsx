@@ -11,6 +11,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Pencil } from "lucide-react";
@@ -20,19 +22,19 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 
-interface TitleFormProps {
-  initialData: { title: string };
+interface ImageFormProps {
+  initialData: { image: string | undefined };
   courseId: string;
 }
-const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
+
+const formSchema = z.object({
+  image: z.string().min(1, { message: "description is required" }),
+});
+const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((current) => !current);
-
-  const formSchema = z.object({
-    title: z.string().min(1, { message: "Title is required" }),
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,7 +46,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course title updated successfully");
+      toast.success("Course description updated successfully");
       router.refresh();
       toggleEdit();
     } catch (error) {
@@ -56,7 +58,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   return (
     <div className="w-full bg-slate-200 p-6 rounded-md">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
-        <h1 className="text-lg ">Course Title</h1>
+        <h1 className="text-lg ">Course description</h1>
         <Button
           variant="ghost"
           className="hover:bg-slate-200"
@@ -75,10 +77,12 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
 
       {!isEditing && (
         <p
-          className="text-neutral-700 text-sm font-semibold pl-2
-        "
+          className={cn(
+            "text-neutral-700 text-sm font-semibold pl-2",
+            !initialData.image && "italic text-neutral-600"
+          )}
         >
-          {initialData.title}
+          {initialData.image ? initialData.image : "No description"}
         </p>
       )}
 
@@ -87,18 +91,18 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="title"
+              name="image"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    <Textarea
                       disabled={isSubmitting}
-                      placeholder="Title for the course"
+                      placeholder="type a description for the course..."
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    Give your course a title. You can change it later.
+                    Give your course a description. You can change it later.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -115,4 +119,4 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   );
 };
 
-export default TitleForm;
+export default ImageForm;

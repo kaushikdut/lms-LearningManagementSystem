@@ -29,7 +29,10 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
           <h1 className="text-xl font-bold">Customize your course</h1>
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm
-            initialData={{ ...course, description: course.description || "" }}
+            initialData={{
+              ...course,
+              description: course.description || undefined,
+            }}
             courseId={course.id}
           />
         </div>
