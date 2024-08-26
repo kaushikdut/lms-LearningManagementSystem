@@ -7,6 +7,7 @@ const nextConfig = {
       "upload.wikimedia.org",
       "i.ytimg.com",
       "img.jakpost.net",
+      "utfs.io",
     ],
   },
 };

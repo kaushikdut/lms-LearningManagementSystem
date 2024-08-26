@@ -3,6 +3,7 @@ import TitleForm from "./_component/title-form";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import DescriptionForm from "./_component/description-form";
+import ImageForm from "./_component/image-form";
 
 const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -35,6 +36,7 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
             }}
             courseId={course.id}
           />
+          <ImageForm initialData={course} courseId={course.id} />
         </div>
         <div>Hello</div>
       </div>

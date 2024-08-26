@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { NextApiRequest } from "next";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 
@@ -6,15 +7,18 @@ const f = createUploadthing();
 
 const handleAuth = () => {
   const { userId } = auth();
+
   if (!userId) throw new UploadThingError("Unauthorized");
   return { userId };
 };
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  courseImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+  courseImage: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  })
     .middleware(() => handleAuth())
-    .onUploadComplete(() => {}),
+    .onUploadComplete((res) => res),
   courseAttachment: f(["image", "pdf", "video", "audio", "text"])
     .middleware(() => handleAuth())
     .onUploadComplete(() => {}),

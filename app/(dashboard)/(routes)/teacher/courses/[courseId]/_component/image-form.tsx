@@ -1,20 +1,13 @@
 "use client";
 
+import FileUpload from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Course } from "@prisma/client";
 import axios from "axios";
-import { Pencil } from "lucide-react";
+import { ImageIcon, Pencil, PlusCircleIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,12 +15,12 @@ import toast from "react-hot-toast";
 import * as z from "zod";
 
 interface ImageFormProps {
-  initialData: { image: string | undefined };
+  initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  image: z.string().min(1, { message: "description is required" }),
+  imageUrl: z.string().min(1, { message: "description is required" }),
 });
 const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -37,17 +30,15 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { imageUrl: initialData.imageUrl || "" },
   });
-
-  const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success("Course description updated successfully");
-      router.refresh();
       toggleEdit();
+      router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
       console.log("submit error: ", error);
@@ -55,64 +46,61 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   };
 
   return (
-    <div className="w-full bg-slate-200 p-6 rounded-md">
+    <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
-        <h1 className="text-lg ">Course description</h1>
+        <h1 className="text-lg ">Course Image</h1>
         <Button
           variant="ghost"
           className="hover:bg-slate-200"
           onClick={toggleEdit}
         >
           {!isEditing ? (
-            <>
-              <Pencil className="w-4 h-4 mr-2" />
-              <p className="text-md ">Edit text</p>{" "}
-            </>
+            initialData.imageUrl ? (
+              <>
+                <Pencil className="w-4 h-4 mr-2" />
+                <p className="text-md ">Edit image</p>{" "}
+              </>
+            ) : (
+              <>
+                <PlusCircleIcon className="w-4 h-4 mr-2" />
+                <p className="text-md">Add image</p>
+              </>
+            )
           ) : (
             <p>Cancle</p>
           )}
         </Button>
       </div>
 
-      {!isEditing && (
-        <p
-          className={cn(
-            "text-neutral-700 text-sm font-semibold pl-2",
-            !initialData.image && "italic text-neutral-600"
-          )}
-        >
-          {initialData.image ? initialData.image : "No description"}
-        </p>
+      {!isEditing && !initialData.imageUrl && (
+        <div className="h-60 w-full flex flex-col items-center justify-center bg-slate-300">
+          <ImageIcon className="w-10 h-10" />
+          <p>No image</p>
+        </div>
+      )}
+
+      {!isEditing && initialData.imageUrl && (
+        <div className=" h-60 relative">
+          <Image
+            src={initialData.imageUrl}
+            alt="uploadedImage"
+            fill
+            className="rounded-md object-cover"
+          />
+        </div>
       )}
 
       {isEditing && (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      disabled={isSubmitting}
-                      placeholder="type a description for the course..."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Give your course a description. You can change it later.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" disabled={!isValid || isSubmitting}>
-              Save
-            </Button>
-          </form>
-        </Form>
+        <div>
+          <FileUpload
+            onChange={(url) => {
+              if (url) {
+                onSubmit({ imageUrl: url });
+              }
+            }}
+            endpoint="courseImage"
+          />
+        </div>
       )}
     </div>
   );
