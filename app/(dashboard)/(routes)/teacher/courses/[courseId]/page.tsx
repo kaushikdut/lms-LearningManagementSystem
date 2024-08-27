@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import DescriptionForm from "./_component/description-form";
 import ImageForm from "./_component/image-form";
+import CategoryForm from "./_component/category-form";
 
 const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -15,6 +16,12 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
     where: {
       id: params.courseId,
       userId,
+    },
+  });
+
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
     },
   });
 
@@ -37,6 +44,14 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
             courseId={course.id}
           />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
         </div>
         <div>Hello</div>
       </div>
