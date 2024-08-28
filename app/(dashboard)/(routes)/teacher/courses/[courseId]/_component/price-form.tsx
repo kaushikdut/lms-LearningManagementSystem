@@ -9,9 +9,12 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { formatPrice } from "@/lib/format-price";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Course } from "@prisma/client";
 import axios from "axios";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -20,15 +23,15 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 
-interface DescriptionFormProps {
-  initialData: { description: string | undefined };
+interface PriceFormProps {
+  initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, { message: "description is required" }),
+  price: z.coerce.number(),
 });
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
@@ -36,7 +39,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { price: initialData?.price || undefined },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -56,7 +59,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   return (
     <div className="w-full bg-slate-200 p-6 rounded-md">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
-        <h1 className="text-lg ">Course description</h1>
+        <h1 className="text-lg ">Course price</h1>
         <Button
           variant="ghost"
           className="hover:bg-slate-200"
@@ -65,7 +68,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
           {!isEditing ? (
             <>
               <Pencil className="w-4 h-4 mr-2" />
-              <p className="text-md ">Edit text</p>{" "}
+              <p className="text-md ">Edit price</p>{" "}
             </>
           ) : (
             <p>Cancle</p>
@@ -76,11 +79,11 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
       {!isEditing && (
         <p
           className={cn(
-            "text-neutral-700 text-sm font-semibold pl-2",
-            !initialData.description && "italic text-neutral-600"
+            "text-red-500 text-sm font-semibold pl-2",
+            !initialData.price && "italic text-neutral-600"
           )}
         >
-          {initialData.description ? initialData.description : "No description"}
+          {initialData.price ? formatPrice(initialData.price) : "No price"}
         </p>
       )}
 
@@ -89,19 +92,18 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
-              name="description"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
+                    <Input
+                      type="number"
+                      step={0.01}
                       disabled={isSubmitting}
-                      placeholder="type a description for the course..."
+                      placeholder="set a price for your course"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Give your course a description. You can change it later.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -117,4 +119,4 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   );
 };
 
-export default DescriptionForm;
+export default PriceForm;

@@ -2,7 +2,7 @@
 
 import FileUpload from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
-import { Course } from "@prisma/client";
+import { Attachment, Course } from "@prisma/client";
 import axios from "axios";
 import { ImageIcon, Pencil, PlusCircleIcon } from "lucide-react";
 import Image from "next/image";
@@ -12,15 +12,15 @@ import toast from "react-hot-toast";
 
 import * as z from "zod";
 
-interface ImageFormProps {
-  initialData: Course;
+interface AttachmentFormProps {
+  initialData: Course & { attachments: Attachment[] };
   courseId: string;
 }
 
 const formSchema = z.object({
-  imageUrl: z.string().min(1, { message: "description is required" }),
+  url: z.string().min(1),
 });
-const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
+const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
@@ -41,22 +41,22 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   return (
     <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
-        <h1 className="text-lg ">Course Image</h1>
+        <h1 className="text-lg ">Course Files</h1>
         <Button
           variant="ghost"
           className="hover:bg-slate-200"
           onClick={toggleEdit}
         >
           {!isEditing ? (
-            initialData.imageUrl ? (
+            initialData.attachments ? (
               <>
                 <Pencil className="w-4 h-4 mr-2" />
-                <p className="text-md ">Edit image</p>{" "}
+                <p className="text-md ">Edit Attachments</p>{" "}
               </>
             ) : (
               <>
                 <PlusCircleIcon className="w-4 h-4 mr-2" />
-                <p className="text-md">Add image</p>
+                <p className="text-md">Add a file</p>
               </>
             )
           ) : (
@@ -65,21 +65,23 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
         </Button>
       </div>
 
-      {!isEditing && !initialData.imageUrl && (
+      {!isEditing && !initialData.attachments && (
         <div className="h-60 w-full flex flex-col items-center justify-center bg-slate-300">
           <ImageIcon className="w-10 h-10" />
           <p>No image</p>
         </div>
       )}
 
-      {!isEditing && initialData.imageUrl && (
-        <div className=" h-60 relative">
-          <Image
-            src={initialData.imageUrl}
-            alt="uploadedImage"
-            fill
-            className="rounded-md object-cover"
-          />
+      {!isEditing && initialData.attachments && (
+        <div>
+          <ul className="flex flex-col gap-y-2">
+            {initialData.attachments.map((attachment) => (
+              <li
+                key={attachment.url}
+                className="flex items-center gap-x-3 bg-slate-300 p-2 rounded-md"
+              ></li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -88,10 +90,10 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
           <FileUpload
             onChange={(url) => {
               if (url) {
-                onSubmit({ imageUrl: url });
+                onSubmit({ url });
               }
             }}
-            endpoint="courseImage"
+            endpoint="courseAttachment"
           />
         </div>
       )}
@@ -99,4 +101,4 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   );
 };
 
-export default ImageForm;
+export default AttachmentForm;
