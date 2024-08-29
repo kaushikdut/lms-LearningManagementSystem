@@ -4,8 +4,7 @@ import FileUpload from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 import { Attachment, Course } from "@prisma/client";
 import axios from "axios";
-import { ImageIcon, Pencil, PlusCircleIcon } from "lucide-react";
-import Image from "next/image";
+import { Loader2, PlusCircleIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -22,19 +21,36 @@ const formSchema = z.object({
 });
 const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Updated successfully");
+      await axios.post(`/api/courses/${courseId}/attachments`, values);
+      toast.success("File uploaded successfully");
       toggleEdit();
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
       console.log("submit error: ", error);
+    }
+  };
+
+  const onDelete = async (id: string) => {
+    try {
+      console.log(id);
+      setDeleteId(`${id}`);
+
+      axios.delete(`/api/courses/${courseId}/attachments/${id}`).then(() => {
+        toast.success("Attachment deleted");
+        router.refresh();
+        setDeleteId(null);
+      });
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log("Delete error: ", error);
     }
   };
 
@@ -48,40 +64,49 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
           onClick={toggleEdit}
         >
           {!isEditing ? (
-            initialData.attachments ? (
-              <>
-                <Pencil className="w-4 h-4 mr-2" />
-                <p className="text-md ">Edit Attachments</p>{" "}
-              </>
-            ) : (
-              <>
-                <PlusCircleIcon className="w-4 h-4 mr-2" />
-                <p className="text-md">Add a file</p>
-              </>
-            )
+            <>
+              <PlusCircleIcon className="w-4 h-4 mr-2" />
+              <p className="text-md">Add a file</p>
+            </>
           ) : (
             <p>Cancle</p>
           )}
         </Button>
       </div>
 
-      {!isEditing && !initialData.attachments && (
-        <div className="h-60 w-full flex flex-col items-center justify-center bg-slate-300">
-          <ImageIcon className="w-10 h-10" />
-          <p>No image</p>
-        </div>
-      )}
-
       {!isEditing && initialData.attachments && (
         <div>
-          <ul className="flex flex-col gap-y-2">
-            {initialData.attachments.map((attachment) => (
-              <li
-                key={attachment.url}
-                className="flex items-center gap-x-3 bg-slate-300 p-2 rounded-md"
-              ></li>
-            ))}
-          </ul>
+          {initialData.attachments.length === 0 && (
+            <p className="text-center">No Files</p>
+          )}
+          {initialData.attachments.length > 0 && (
+            <ul className="flex flex-col gap-y-2">
+              {initialData.attachments?.map((attachment) => (
+                <li
+                  key={attachment.url}
+                  className="flex items-center justify-between gap-x-3 bg-slate-300 p-2 rounded-md"
+                >
+                  <p className="line-clamp-1">{attachment.name}</p>
+                  <div>
+                    {deleteId === attachment.id && (
+                      <div className="flex items-center mr-3 py-2">
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                      </div>
+                    )}
+                    {deleteId !== attachment.id && (
+                      <Button
+                        variant={"ghost"}
+                        onClick={() => onDelete(attachment.id)}
+                        className="hover:bg-slate-200 transition"
+                      >
+                        <Trash2Icon className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
@@ -97,6 +122,9 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
           />
         </div>
       )}
+      <p className="text-sm text-muted-foreground text-center">
+        Add files related to this course
+      </p>
     </div>
   );
 };
