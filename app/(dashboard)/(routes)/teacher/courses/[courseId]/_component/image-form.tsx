@@ -39,7 +39,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md">
+    <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md text-sky-900">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
         <h1 className="text-lg ">Course Image</h1>
         <Button
@@ -66,7 +66,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
       </div>
 
       {!isEditing && !initialData.imageUrl && (
-        <div className="h-60 w-full flex flex-col items-center justify-center bg-slate-300">
+        <div className="h-60 w-full flex flex-col items-center justify-center bg-slate-100 rounded-md">
           <ImageIcon className="w-10 h-10" />
           <p>No image</p>
         </div>

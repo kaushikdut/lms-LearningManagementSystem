@@ -80,11 +80,11 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
             <p className="text-center">No Files</p>
           )}
           {initialData.attachments.length > 0 && (
-            <ul className="flex flex-col gap-y-2">
+            <ul className="flex flex-col gap-y-2 text-sky-900">
               {initialData.attachments?.map((attachment) => (
                 <li
                   key={attachment.url}
-                  className="flex items-center justify-between gap-x-3 bg-slate-300 p-2 rounded-md"
+                  className="flex items-center justify-between gap-x-3 bg-slate-100 p-2 rounded-md"
                 >
                   <p className="line-clamp-1">{attachment.name}</p>
                   <div>
@@ -97,7 +97,7 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
                       <Button
                         variant={"ghost"}
                         onClick={() => onDelete(attachment.id)}
-                        className="hover:bg-slate-200 transition"
+                        className="hover:bg-slate-200 hover:text-sky-900 transition"
                       >
                         <Trash2Icon className="w-4 h-4" />
                       </Button>
