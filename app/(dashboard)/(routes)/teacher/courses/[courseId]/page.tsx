@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import PriceForm from "./_component/price-form";
 import AttachmentForm from "./_component/attachment-form";
+import ChapterForm from "./_component/chapters-form";
 
 const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -28,7 +29,8 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
       userId,
     },
     include: {
-      attachments: true,
+      attachments: { orderBy: { createdAt: "desc" } },
+      chapters: { orderBy: { createdAt: "asc" } },
     },
   });
 
@@ -75,7 +77,9 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <IconBadge icon={ListChecksIcon} />
               <h1 className="text-xl font-bold">Course Chapter</h1>
             </div>
-            <div>To Do Chapters</div>
+            <div>
+              <ChapterForm initialData={course} courseId={course.id} />
+            </div>
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={CircleDollarSignIcon} />{" "}
