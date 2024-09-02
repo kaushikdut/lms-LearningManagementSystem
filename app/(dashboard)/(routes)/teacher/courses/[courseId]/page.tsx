@@ -30,7 +30,7 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
     },
     include: {
       attachments: { orderBy: { createdAt: "desc" } },
-      chapters: { orderBy: { createdAt: "asc" } },
+      chapters: { orderBy: { position: "asc" } },
     },
   });
 

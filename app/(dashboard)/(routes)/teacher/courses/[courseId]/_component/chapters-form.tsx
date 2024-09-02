@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,12 +15,13 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Chapter, Course } from "@prisma/client";
 import axios from "axios";
-import { PlusCircleIcon } from "lucide-react";
+import { Grip, Loader2, PlusCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
+import ChapterList from "./chapter-list";
 
 interface ChapterFormProps {
   initialData: Course & { chapters: Chapter[] };
@@ -33,7 +33,7 @@ const formSchema = z.object({
 });
 const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
 
   const toggleEdit = () => setIsCreating((current) => !current);
@@ -57,9 +57,30 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
       console.log("submit error: ", error);
     }
   };
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
 
+      await axios
+        .put(`/api/courses/${courseId}/chapters/reorder`, {
+          list: updateData,
+        })
+        .then(() => {
+          toast.success("Chapters reordered");
+          router.refresh();
+          setIsUpdating(false);
+        });
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
   return (
-    <div className="w-full bg-slate-200 p-6 rounded-md">
+    <div className="w-full bg-slate-200 p-6 rounded-md relative">
+      {isUpdating && (
+        <div className="rounded-m absolute right-0 top-0 flex h-full w-full items-center justify-center bg-slate-500/20">
+          <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
+        </div>
+      )}
       <div className="flex justify-between items-center font-semibold text-neutral-800">
         <h1 className="text-lg ">Course chapters</h1>
         <Button
@@ -87,17 +108,11 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
         >
           {!initialData.chapters.length && "No chapters"}
           {initialData.chapters.length > 0 && (
-            <div className="w-full flex flex-col gap-y-1 overflow-y-auto max-h-[200px]">
-              {initialData.chapters.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  className="flex items-center justify-between bg-slate-50 p-3"
-                >
-                  <p>{chapter.title}</p>
-                  <Badge className="text-xs cursor-pointer">draft</Badge>
-                </div>
-              ))}
-            </div>
+            <ChapterList
+              chapterList={initialData.chapters}
+              courseId={courseId}
+              onReorder={onReorder}
+            />
           )}
         </div>
       )}
