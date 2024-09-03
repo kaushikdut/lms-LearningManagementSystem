@@ -89,3 +89,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.ql-container {
+  font-size: 16px !important;
+}
