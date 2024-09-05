@@ -23,6 +23,9 @@ const ChapterId = async ({
       id: chapterId,
       courseId,
     },
+    include: {
+      muxData: true,
+    },
   });
 
   if (!chapter) {

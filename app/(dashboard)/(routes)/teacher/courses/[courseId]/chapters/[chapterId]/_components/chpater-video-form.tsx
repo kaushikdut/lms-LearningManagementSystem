@@ -77,8 +77,15 @@ const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
       )}
 
       {!isEditing && initialData.videoUrl && (
-        <div className="relative mt-2 aspect-video">
-          <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+        <div className="relative aspect-video mt-2">
+          <MuxPlayer
+            playbackId={initialData?.muxData?.playbackId || ""}
+            className="w-full"
+          />
+          <p className="mt-2 text-xs text-muted-foreground">
+            Videos can take a few minutes to process. Refresh the page if video
+            does not appear.
+          </p>
         </div>
       )}
 

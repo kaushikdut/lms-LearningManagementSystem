@@ -69,7 +69,7 @@ export const ChapterDescriptionForm = ({
   return (
     <div className="mt-6 rounded-md border bg-slate-200 p-4">
       <div className="flex items-center justify-between font-medium">
-        Chapter description
+        <h1 className="text-lg font-semibold">Chapter description</h1>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
