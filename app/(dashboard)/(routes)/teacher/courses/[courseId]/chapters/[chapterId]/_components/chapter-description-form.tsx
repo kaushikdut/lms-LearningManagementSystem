@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
+import { NotepadText, Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
+import { IconBadge } from "@/components/icon-badge";
 
 interface ChapterDescriptionFormProps {
   initialData: Chapter;
@@ -69,7 +70,10 @@ export const ChapterDescriptionForm = ({
   return (
     <div className="mt-6 rounded-md border bg-slate-200 p-4">
       <div className="flex items-center justify-between font-medium">
-        <h1 className="text-lg font-semibold">Chapter description</h1>
+        <div className="flex items-center">
+          <IconBadge icon={NotepadText} size={"md"} />
+          <h1 className="text-lg font-semibold">Chapter description</h1>
+        </div>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>

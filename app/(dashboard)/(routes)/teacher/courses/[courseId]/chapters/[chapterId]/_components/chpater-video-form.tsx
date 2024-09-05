@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 import MuxPlayer from "@mux/mux-player-react";
 import * as z from "zod";
+import { IconBadge } from "@/components/icon-badge";
 
 interface VideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
@@ -46,7 +47,10 @@ const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
   return (
     <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md text-sky-900">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
-        <h1 className="text-lg ">Chapter video</h1>
+        <div className="flex items-center gap-x-2">
+          <IconBadge icon={Video} size={"md"} />
+          <h1 className="text-lg ">Chapter video</h1>
+        </div>
         <Button
           variant="ghost"
           className="hover:bg-slate-200"
