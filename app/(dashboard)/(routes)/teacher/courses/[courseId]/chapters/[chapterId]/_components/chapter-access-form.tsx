@@ -62,6 +62,7 @@ export const ChapterAccessForm = ({
       toast.success("Chapter updated");
       toggleEdit();
       router.refresh();
+      console.log("triggered");
     } catch {
       toast.error("Something went wrong");
     }
