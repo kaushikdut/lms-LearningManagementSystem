@@ -11,7 +11,7 @@ import { Grip, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ChapterListProps {
@@ -24,7 +24,16 @@ const ChapterList = ({
   courseId,
   onReorder,
 }: ChapterListProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [chapters, setChapters] = useState(chapterList);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setChapters(chapterList);
+  }, [chapterList]);
 
   const router = useRouter();
   const onEdit = (id: string) => {
@@ -54,6 +63,10 @@ const ChapterList = ({
 
     onReorder(bulkUpdateData);
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

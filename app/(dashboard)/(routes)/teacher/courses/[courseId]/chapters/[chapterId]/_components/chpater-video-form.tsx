@@ -14,7 +14,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import * as z from "zod";
 import { IconBadge } from "@/components/icon-badge";
 
-interface VideoFormProps {
+interface ChapterVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
   courseId: string;
   chapterId: string;
@@ -23,7 +23,11 @@ interface VideoFormProps {
 const formSchema = z.object({
   videoUrl: z.string().min(1),
 });
-const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
+const ChapterVideoForm = ({
+  initialData,
+  courseId,
+  chapterId,
+}: ChapterVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
@@ -45,17 +49,13 @@ const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md text-sky-900">
+    <div className="w-full flex flex-col gap-y-3 bg-slate-200 p-6 rounded-md text-sky-900">
       <div className="flex justify-between items-center font-semibold text-neutral-800">
         <div className="flex items-center gap-x-2">
           <IconBadge icon={Video} size={"md"} />
           <h1 className="text-lg ">Chapter video</h1>
         </div>
-        <Button
-          variant="ghost"
-          className="hover:bg-slate-200"
-          onClick={toggleEdit}
-        >
+        <Button variant="ghost" onClick={toggleEdit}>
           {!isEditing ? (
             initialData.videoUrl ? (
               <>
@@ -109,4 +109,4 @@ const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
   );
 };
 
-export default VideoForm;
+export default ChapterVideoForm;

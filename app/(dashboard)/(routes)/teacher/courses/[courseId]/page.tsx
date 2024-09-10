@@ -8,7 +8,6 @@ import CategoryForm from "./_component/category-form";
 import { IconBadge } from "@/components/icon-badge";
 import {
   CircleDollarSignIcon,
-  File,
   FileIcon,
   LayoutDashboard,
   ListChecksIcon,
@@ -45,7 +44,7 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
   }
 
   return (
-    <div>
+    <div className="p-6">
       <h1 className="text-3xl font-bold">Course Setup</h1>
       <div className="grid mt-10 gap-2 gap-x-6 grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col gap-y-8 p-6">

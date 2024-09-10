@@ -10,12 +10,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Chapter, Course } from "@prisma/client";
 import axios from "axios";
-import { Grip, Loader2, PlusCircleIcon } from "lucide-react";
+import { Loader2, PlusCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -47,11 +46,10 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${courseId}/chapters`, values).then(() => {
-        toast.success("created successfully");
-        toggleEdit();
-        router.refresh();
-      });
+      await axios.post(`/api/courses/${courseId}/chapters`, values);
+      toast.success("created successfully");
+      toggleEdit();
+      router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
       console.log("submit error: ", error);
@@ -145,6 +143,11 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
             </Button>
           </form>
         </Form>
+      )}
+      {!isCreating && (
+        <p className="mt-4 text-xs text-muted-foreground">
+          Drag and drop to reorder the chapters
+        </p>
       )}
     </div>
   );

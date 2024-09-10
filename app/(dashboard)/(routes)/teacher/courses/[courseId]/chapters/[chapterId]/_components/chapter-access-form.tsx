@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, EyeIcon, Pencil } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Preview } from "@/components/preview";
 import { IconBadge } from "@/components/icon-badge";
 import { Switch } from "@/components/ui/switch";
 
@@ -30,7 +29,7 @@ interface ChapterAccessFormProps {
 }
 
 const formSchema = z.object({
-  isPublished: z.boolean().default(false),
+  isFree: z.boolean().default(false),
 });
 
 export const ChapterAccessForm = ({
@@ -47,7 +46,7 @@ export const ChapterAccessForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isPublished: initialData?.isPublished,
+      isFree: initialData?.isFree,
     },
   });
 
@@ -62,7 +61,6 @@ export const ChapterAccessForm = ({
       toast.success("Chapter updated");
       toggleEdit();
       router.refresh();
-      console.log("triggered");
     } catch {
       toast.error("Something went wrong");
     }
@@ -90,14 +88,16 @@ export const ChapterAccessForm = ({
       <div className="flex justify-between">
         <div className={cn("mt-2 text-sm")}>
           <p>
-            Publish status:
+            Status:
             <span
               className={cn(
                 "font-semibold text-red-600",
-                initialData.isPublished && "text-green-600"
+                initialData.isFree && "text-green-600"
               )}
             >
-              {initialData.isPublished ? " Published" : " Not published"}
+              {initialData.isFree
+                ? " This chapter is free for preview"
+                : " This chapter is not free for preview"}
             </span>
           </p>
         </div>
@@ -110,7 +110,7 @@ export const ChapterAccessForm = ({
               >
                 <FormField
                   control={form.control}
-                  name="isPublished"
+                  name="isFree"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
