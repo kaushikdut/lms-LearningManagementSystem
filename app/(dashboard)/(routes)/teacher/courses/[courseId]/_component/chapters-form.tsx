@@ -48,6 +48,7 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
     try {
       await axios.post(`/api/courses/${courseId}/chapters`, values);
       toast.success("created successfully");
+
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -100,8 +101,8 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
       {!isCreating && (
         <div
           className={cn(
-            "text-neutral-700 text-sm font-semibold divl-2",
-            !initialData.chapters.length && "italic text-neutral-600"
+            "text-neutral-700 text-sm",
+            !initialData.chapters.length && "italic text-neutral-500"
           )}
         >
           {!initialData.chapters.length && "No chapters"}
