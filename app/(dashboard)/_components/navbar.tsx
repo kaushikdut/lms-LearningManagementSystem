@@ -1,20 +1,22 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import SearchBar from "./searchBar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
-import Logo from "./logo";
+import SearchBar from "../(routes)/search/_components/searchBar";
 
 const Navbar = () => {
   const pathname = usePathname();
   const isTeacher = pathname.includes("/teacher");
+  const isSearchPage = pathname?.includes("/search");
+
   return (
-    <div className="w-full h-full flex items-center justify-between px-6 -z-50">
-      <SearchBar />
-      <div className="flex gap-x-4">
+    <div className="w-full h-full flex items-center px-6 -z-50">
+      {isSearchPage && <SearchBar />}
+
+      <div className="ml-auto flex gap-x-4">
         {isTeacher ? (
           <Link href="/">
             <Button size={"sm"} variant="ghost">
