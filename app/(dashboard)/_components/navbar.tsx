@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
 import SearchBar from "../(routes)/search/_components/searchBar";
+import MobileSidebar from "./mobile-sidebar";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -14,7 +15,15 @@ const Navbar = () => {
 
   return (
     <div className="w-full h-full flex items-center px-6 -z-50">
-      {isSearchPage && <SearchBar />}
+      <div className="block md:hidden ">
+        <MobileSidebar />
+      </div>
+
+      {isSearchPage && (
+        <div className="hidden md:flex w-full  ">
+          <SearchBar />
+        </div>
+      )}
 
       <div className="ml-auto flex gap-x-4">
         {isTeacher ? (
