@@ -73,8 +73,8 @@ const courseIdPage = async ({ params }: { params: { courseId: string } }) => {
             <h1 className="text-3xl font-bold">Course Setup</h1>
             <span
               className={cn(
-                "text-sm text-slate-700 pl-3",
-                completionText && "text-emerald-500"
+                "text-sm text-red-500 pl-3",
+                isComplete && "text-emerald-500"
               )}
             >
               Complete all fields {completionText}
