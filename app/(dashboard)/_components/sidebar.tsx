@@ -12,7 +12,7 @@ const guestRoute = [
   },
   {
     icon: Compass,
-    label: "Search",
+    label: "Browse",
     href: "/search",
   },
 ];
